@@ -1,0 +1,15 @@
+
+version: '2.1'
+
+services:
+
+    producer:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: producer:latest
+        ports:
+            - "5000:5000"
+        environment: 
+            - PYTHONPATH=${PYTHONPATH}:/app/src/main.py
+        

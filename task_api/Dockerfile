@@ -11,9 +11,9 @@ ENV MY_MODULE="task_api"
 #     apt-get install -y python-pip python-dev
 
 # We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt ${BASE_DIR}/requirements.txt 
+COPY requirements.txt ${BASE_DIR}/requirements.txt 
 
-ADD ${MY_MODULE} ${BASE_DIR}/${MY_MODULE}
+ADD . ${BASE_DIR}/${MY_MODULE}
 
 ENV PYTHONPATH=$PYTHONPATH:${BASE_DIR}
 ENV PYTHONPATH=${PYTHONPATH}:${MY_MODULE}

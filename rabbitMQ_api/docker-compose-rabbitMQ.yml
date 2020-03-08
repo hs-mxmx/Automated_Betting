@@ -1,0 +1,46 @@
+
+version: '2.1'
+
+services:
+
+    rabbitmq:
+        image: rabbitmq:management-alpine
+        ports:
+            # The standard AMQP protocol port
+            - '5672:5672'
+            # HTTP management UI
+            - '15672:15672'
+        networks:
+            - network
+
+    producer:
+        build:
+            context: .
+            dockerfile: producer/Dockerfile
+        image: producer:latest
+        depends_on: 
+            - rabbitmq
+        environment: 
+            - PYTHONPATH=${PYTHONPATH}:/app/src/producer.py
+            - AMQP_URL='amqp://rabbitmq?connection_attempts=5&retry_delay=5'
+        networks:
+            - network
+
+
+    consumer:
+        build:
+            context: .
+            dockerfile: consumer/Dockerfile
+        image: consumer:latest
+        depends_on: 
+            - rabbitmq
+        environment: 
+            - PYTHONPATH=${PYTHONPATH}:/app/src/consumer.py
+            - AMQP_URL='amqp://rabbitmq?connection_attempts=5&retry_delay=5'
+        networks:
+            - network
+        
+networks:
+    # Declare our private network.  We must declare one for the magic
+    # Docker DNS to work, but otherwise its default settings are fine.
+    network: {}

@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def route_home():
-    return 'Hey, we have Flask in a Docker container!'
+    return 'Group 4 (Flask API) Currently under maintenance'
 
 
 if __name__ == '__main__':
