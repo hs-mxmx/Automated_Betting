@@ -1,0 +1,17 @@
+
+version: '2.1'
+
+services:
+
+    task_api:
+        build:
+            context: .
+            dockerfile: task_api/Dockerfile
+        image: task_api:latest
+        volumes: 
+            - .:/app
+        ports:
+            - "5000:5000"
+        environment: 
+            - PYTHONPATH=${PYTHONPATH}:/app/src/main.py
+        
