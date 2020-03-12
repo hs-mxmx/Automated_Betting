@@ -20,9 +20,8 @@ ENV PYTHONPATH=${PYTHONPATH}:${MY_MODULE}
 
 WORKDIR ${BASE_DIR}
 
-RUN pip install -r ${BASE_DIR}/requirements.txt && \
-    pwd && \
-    ls  
+RUN pip install -r ${BASE_DIR}/requirements.txt
+
 
 ENTRYPOINT [ "python" ]
 

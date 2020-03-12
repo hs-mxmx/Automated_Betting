@@ -20,11 +20,6 @@ ENV PYTHONPATH=${PYTHONPATH}:${MY_MODULE}
 
 WORKDIR ${BASE_DIR}
 
-RUN pip install -r ${BASE_DIR}/requirements.txt && \
-    cd producer/src/ && \
-    pwd && \
-    ls
+RUN pip install -r ${BASE_DIR}/requirements.txt
 
-ENTRYPOINT [ "python" ]
-
-CMD [ "/app/producer/src/producer.py" ]
+CMD ["python", "/app/producer/src/producer.py" ]

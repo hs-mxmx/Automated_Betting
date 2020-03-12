@@ -22,24 +22,27 @@ services:
             - rabbitmq
         environment: 
             - PYTHONPATH=${PYTHONPATH}:/app/src/producer.py
-            - AMQP_URL='amqp://rabbitmq?connection_attempts=5&retry_delay=5'
+            - AMQP_URL=amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou
         networks:
             - network
-
 
     consumer:
         build:
             context: .
             dockerfile: consumer/Dockerfile
         image: consumer:latest
-        depends_on: 
+        volumes:
+            - .:/app
+        depends_on:
             - rabbitmq
-        environment: 
+        environment:
             - PYTHONPATH=${PYTHONPATH}:/app/src/consumer.py
-            - AMQP_URL='amqp://rabbitmq?connection_attempts=5&retry_delay=5'
+            - AMQP_URL=amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou
         networks:
             - network
-        
+
+
+
 networks:
     # Declare our private network.  We must declare one for the magic
     # Docker DNS to work, but otherwise its default settings are fine.
