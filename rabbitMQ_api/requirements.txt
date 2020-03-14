@@ -1,1 +1,3 @@
 pika
+Flask==1.1.1
+Flask-Threads

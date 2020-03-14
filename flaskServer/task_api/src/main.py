@@ -1,11 +1,13 @@
 
-
+from flask import render_template
 from flask import Flask
 app = Flask(__name__)
 
 @app.route('/')
-def route_home():
-    return 'Group 4 (Flask API) Currently under maintenance'
+@app.route('/index')
+def index():
+    user = {'username': 'Daniel'}
+    return render_template('index.html', title='Home', user=user)
 
 
 if __name__ == '__main__':
