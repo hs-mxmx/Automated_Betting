@@ -6,6 +6,7 @@ from flask import Flask
 from flask import render_template
 from datetime import datetime
 from threading import Thread
+import dbBalancer
 
 # Create Flask instance
 app = Flask(__name__)
@@ -16,8 +17,18 @@ EXCHANGE = 'my_exchange'
 # Name of rabbitMQ queue
 QUEUE = 'my_queue'
 
+# Current Date
+DATE = datetime.now()
+
+
+
 # Log file
-LOG_FILE = str(datetime.date(datetime.now())) + ".txt"
+LOG_FILE = DATE.strftime('%b_%d_%Y') + ".txt"
+print(LOG_FILE)
+LOG_TEMP = "temp-"+ LOG_FILE
+
+# Log Route
+LOG_ROUTE = "logs/"
 
 
 def main():
@@ -68,7 +79,7 @@ def read_message(msg):
     msg = msg.decode("utf-8")
 #   q.put(msg)
 #   for elem in q.queue: 
-    saveFile(LOG_FILE, msg)
+    saveFile(msg)
     # temp_message = read_tempFile("temp-2020-03-13.txt")
     # print("Messages: %r " % temp_message)
     print("Message: %r " % msg)
@@ -82,20 +93,25 @@ def read_tempFile(logfile):
     return my_temp_list
 
 
-def saveFile(logfile, msg):
+def saveFile(msg):
     temp_msg = msg
     msg = "[" + str(datetime.time(datetime.now())) + "]: " + msg
     try:
-        file = open(logfile, "a")
+        file = open(LOG_ROUTE + LOG_FILE, "a")
         file.write("\n" + msg)
         file.close()
-        file_temp = open("temp-"+logfile, "a")
+        file_temp = open(LOG_ROUTE + LOG_TEMP, "a")
         file_temp.write("\n" + temp_msg)
+
+        # Database Import
+        myDatabase = dbBalancer.dbConnection()
+        thread = Thread(target=myDatabase.enableConnection(temp_msg))
+        thread.start()
     except IOError:
-        file = open(logfile, "w")
+        file = open(LOG_ROUTE, "w")
         file.write("\n" + msg)
         file.close()
-        file_temp = open("temp-"+logfile, "w")
+        file_temp = open(LOG_ROUTE + LOG_TEMP, "w")
         file_temp.write("\n" + temp_msg)
     finally:
         file.close()
@@ -104,7 +120,7 @@ def saveFile(logfile, msg):
 @app.route('/')
 @app.route('/index')
 def index():
-    temp_message = read_tempFile("temp-2020-03-13.txt")
+    temp_message = read_tempFile(LOG_ROUTE + "temp-Mar_14_2020.txt")
     print("Messages: %r " % temp_message)
     return render_template('index.html', title='Index', data=temp_message)
 

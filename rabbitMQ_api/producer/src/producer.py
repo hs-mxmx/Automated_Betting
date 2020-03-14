@@ -17,6 +17,9 @@ QUEUE = 'my_queue'
 # Delay between messages
 DELAY = 0.1
 
+# Number of clients
+MAX_CLIENTS = 5
+
 def main():
     # Location of ARabbitMQ server from AMQP_URL variable
     amqp_url = "amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou"
@@ -42,7 +45,7 @@ def opened_connection(connection):
 
 
 def send_message(channel, i):
-    myClient = myClients.myClients(random.randint(0,1),'','','')
+    myClient = myClients.myClients(random.randint(0,MAX_CLIENTS),'','','')
     myClient.createClient()
     msg = "{}_{}_{}_({})".format(myClient.id, myClient.company, myClient.price, myClient.date)
     channel.basic_publish(exchange='', routing_key=QUEUE, body=msg)

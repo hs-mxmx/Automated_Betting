@@ -19,6 +19,14 @@ class myClients:
             self.company = 'Telefonica'
         if self.id == 1:
             self.company = 'Google'
+        if self.id == 2:
+            self.company = 'Apple'
+        if self.id == 3:
+            self.company = 'Tesla'
+        if self.id == 4:
+            self.company = 'NASA'
+        if self.id == 5:
+            self.company = 'Microsoft'
 
     def main(self):
         self.createClient()
