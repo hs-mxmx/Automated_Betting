@@ -17,6 +17,11 @@ def html_table():
 
     return render_template('table.html',  tables=[df.to_html(classes='data')], titles=df.columns.values)
 
+class myClients_table:
+
+    def __init__()
+
+
 
 
 if __name__ == '__main__':

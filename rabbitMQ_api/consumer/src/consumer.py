@@ -19,9 +19,6 @@ QUEUE = 'my_queue'
 # Log file
 LOG_FILE = str(datetime.date(datetime.now())) + ".txt"
 
-# Python queue
-myData = []
-temp_data = []
 
 def main():
     # Location of RabbitMQ server from AMQP_URL variable
@@ -72,10 +69,9 @@ def read_message(msg):
 #   q.put(msg)
 #   for elem in q.queue: 
     saveFile(LOG_FILE, msg)
-    temp_message = read_tempFile("temp-2020-03-13.txt")
-    temp_data = temp_message
-    myData.append(msg)
-    print("Messages: %r " % temp_data)
+    # temp_message = read_tempFile("temp-2020-03-13.txt")
+    # print("Messages: %r " % temp_message)
+    print("Message: %r " % msg)
     time.sleep(1)
     return
 
@@ -109,6 +105,7 @@ def saveFile(logfile, msg):
 @app.route('/index')
 def index():
     temp_message = read_tempFile("temp-2020-03-13.txt")
+    print("Messages: %r " % temp_message)
     return render_template('index.html', title='Index', data=temp_message)
 
 @app.route('/home')
