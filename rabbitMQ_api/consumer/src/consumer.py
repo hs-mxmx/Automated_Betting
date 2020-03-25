@@ -27,9 +27,16 @@ DATE = datetime.now()
 LOG_FILE = DATE.strftime('%b_%d_%Y') + ".txt"
 LOG_TEMP = "temp-"+ LOG_FILE
 
-# Log Route
-LOG_ROUTE = os.path.dirname(os.path.relpath(__file__)) + '/logs'
+# Docker Log Route
+LOG_ROUTE = os.path.dirname(__file__) + '/logs/'
 
+
+""" TROUBLESHOOTING """
+# Windows alternative Route
+# LOG_ROUTE = os.path.abspath(os.curdir) + '/logs/'
+
+# Only for Docker Image (Linux)
+# LOG_ROUTE = os.path.dirname(os.path.relpath(__file__)) + '/logs/'
 
 def main():
     # Location of RabbitMQ server from AMQP_URL variable
@@ -111,10 +118,10 @@ def saveFile(msg):
         #threadData.start()
 
     except IOError:
-        file = open(LOG_ROUTE + LOG_FILE, "w")
+        file = open(LOG_ROUTE + LOG_FILE, "w+")
         file.write("\n" + msg)
         file.close()
-        file_temp = open(LOG_ROUTE + LOG_TEMP, "w")
+        file_temp = open(LOG_ROUTE + LOG_TEMP, "w+")
         file_temp.write("\n" + temp_msg)
         file_temp.close()
         

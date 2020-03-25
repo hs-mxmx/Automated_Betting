@@ -33,7 +33,7 @@ services:
             dockerfile: consumer/Dockerfile
         image: consumer:latest
         volumes:
-            - ./consumer:/app
+            - "./consumer:/app/consumer:rw"
         depends_on:
             - rabbitmq
         ports:
