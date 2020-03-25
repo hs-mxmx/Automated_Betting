@@ -1,7 +1,0 @@
-pika
-Flask==1.1.1
-Flask-Threads
-python-dotenv
-pandas
-mysql
-numpy

@@ -17,12 +17,24 @@ def html_table():
 
     return render_template('table.html',  tables=[df.to_html(classes='data')], titles=df.columns.values)
 
-class myClients_table:
-
-    def __init__()
 
 
 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='5000')
+
+
+    """
+    def upload_from_pandas(self, dataframe=None, name='table_name_for_df', connect_timeout=350):
+        
+        Uploads to a mysql table from a pandas dataframe
+        Uses sqlalchemy
+        Args:
+            dataframe: Pandas dataframe with the columns that will be inserted in the database
+            name: name of the mysql table to insert the dataframe into
+   
+        Returns:
+            None
+   
+        """
