@@ -7,6 +7,7 @@ from flask import render_template
 from datetime import datetime
 from threading import Thread
 import dbBalancer
+import logging
 
 # Create Flask instance
 app = Flask(__name__)
@@ -24,17 +25,16 @@ DATE = datetime.now()
 
 # Log file
 LOG_FILE = DATE.strftime('%b_%d_%Y') + ".txt"
-print(LOG_FILE)
 LOG_TEMP = "temp-"+ LOG_FILE
 
 # Log Route
-LOG_ROUTE = "logs/"
+LOG_ROUTE = os.path.dirname(os.path.relpath(__file__)) + '/logs'
 
 
 def main():
     # Location of RabbitMQ server from AMQP_URL variable
     amqp_url =  "amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou"
-    print('URL: %s' % (amqp_url))
+    # print('URL: %s' % (amqp_url))
 
     # Stablish connection
     parameters = pika.URLParameters(amqp_url)
@@ -49,26 +49,26 @@ def main():
 
 def opened_connection(connection):
     # Connection stablished
-    print("[!] Starting channel...")
+    # print("[!] Starting channel...")
     channel = connection.channel()
     opened_qos(channel,connection)
 
 
 def opened_qos(channel, connection):
-    print("[+] Queue QoS...")
+    # print("[+] Queue QoS...")
     channel.basic_qos(prefetch_count=1, 
     callback=opened_queue(channel,connection))
 
 def opened_queue(channel, connection):
-    print("[+] Queue opened...")
+    # print("[+] Queue opened...")
     channel.queue_bind(queue=QUEUE, exchange= '', routing_key=QUEUE, callback=open_message(channel, connection))
 
 def callback(ch, method, properties, body):
-    print("Callback")
+    # print("Callback")
     read_message(body)
 
 def open_message(channel, connection):
-    print("Opening messages...")
+    # print("Opening messages...")
     channel.basic_consume(queue=QUEUE, on_message_callback=callback, auto_ack=True)
     print("Waiting for messages...")
     thread = Thread(channel.start_consuming())
@@ -102,20 +102,23 @@ def saveFile(msg):
         file.close()
         file_temp = open(LOG_ROUTE + LOG_TEMP, "a")
         file_temp.write("\n" + temp_msg)
-
+        file.close()
         # Database Import
-        myDatabase = dbBalancer.dbConnection()
-        thread = Thread(target=myDatabase.enableConnection(temp_msg))
-        thread.start()
+        #myDatabase = dbBalancer.dbConnection()
+        # threadSave = Thread(target=myDatabase.enableConnection(temp_msg))
+        #threadSave.start()
+        # threadData = Thread(target=myDatabase.getData(dbBalancer.MY_TABLE))
+        #threadData.start()
+
     except IOError:
-        file = open(LOG_ROUTE, "w")
+        file = open(LOG_ROUTE + LOG_FILE, "w")
         file.write("\n" + msg)
         file.close()
         file_temp = open(LOG_ROUTE + LOG_TEMP, "w")
         file_temp.write("\n" + temp_msg)
-    finally:
-        file.close()
         file_temp.close()
+        
+        
 
 @app.route('/')
 @app.route('/index')
@@ -129,6 +132,8 @@ def home():
     return render_template('index.html', title='Home', data='Home')
 
 if __name__ == '__main__':
+    log = logging.getLogger('werkzeug')
+    log.disabled = True
     thread = Thread(target=main)
     thread.daemon = True
     thread.start()

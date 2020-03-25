@@ -1,13 +1,15 @@
 from __future__ import print_function
-import mysql.connector
+# import mysql.connector
 import os
 import re
 import datetime
-from mysql.connector import errorcode
+import itertools
+# from mysql.connector import errorcode
 from dotenv import load_dotenv
 from pathlib import Path
 
 
+MY_TABLE = "clients"
 
 class dbConnection():
 
@@ -23,7 +25,7 @@ class dbConnection():
 
     def enableConnection(self, data):
         if self.user == '':
-            print("Finding credentials...") 
+            # print("Finding credentials...") 
             self.readEnv()
         self.stablishConnection(data)
     
@@ -42,7 +44,7 @@ class dbConnection():
             self.connection = mysql.connector.connect(user=self.user, password=self.password,
                                                 host=self.host,
                                                 database=self.database)
-            print("Connection Stablished as {} ".format(self.user))
+            # print("Connection Stablished as {} ".format(self.user))
             self.cursor =  self.connection.cursor()
             self.checkTable()
             self.insertTuples(data)
@@ -83,32 +85,34 @@ class dbConnection():
 
     def checkTable(self):
         self.cursor.execute("""SHOW TABLES""")
-        print("=== TABLES === \n")
-        for (table,) in self.cursor: print("[+] {} \n".format(table))
-        # temp_table = input("Select your table: ")
-        temp_table = 'clients'
-        self.table = temp_table
-        try:
-            self.cursor.execute("""SELECT * FROM `%s` ;""" %(self.table,))
-            print(self.cursor.fetchall())
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-                print("Table already exists.")
-            else:
-                print(err.msg)
-            mytable = input("Insert table name: ")
-            self.createTable(mytable)
+        rows = self.cursor.fetchall()
+        my_tables = list(itertools.chain(*rows))
+        if MY_TABLE not in my_tables:
+            print("creating")
+            self.createTable(MY_TABLE)
+        self.table = MY_TABLE
 
-
+        
     def insertTuples(self, data):
         data = self.formatInfo(data)
-        print(data)
+        # print(data)
         self.cursor.execute("""INSERT INTO `%s` (name, price, date) VALUES ('%s', '%s' , '%s') ;""" %(self.table, data[1], data[2], data[3],))
         self.connection.commit()
         
-        
-#INSERT INTO clients (id, name, price, date) VALUES ('2','hola','400','2020-03-14');
 
+    def getData(self, tableName):
+        print(tableName)
+        self.readEnv()
+        self.connection = mysql.connector.connect(user=self.user, password=self.password,
+                                                host=self.host,
+                                                database=self.database)
+            # print("Connection Stablished as {} ".format(self.user))
+        self.cursor =  self.connection.cursor()
+        self.cursor.execute("""SELECT * FROM `%s` ;""" %(tableName))
+        raw_data = self.cursor.fetchall()
+        myData = list(itertools.chain(*raw_data))
+        for item in myData: print(item)
+                
 
     def formatInfo(self, data):
         replace_strings = {"_" : " ", "(" : "", ")" : ""}

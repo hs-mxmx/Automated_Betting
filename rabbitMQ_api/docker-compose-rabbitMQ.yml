@@ -15,8 +15,8 @@ services:
 
     producer:
         build:
-            context: .
-            dockerfile: producer/Dockerfile
+            context: producer/
+            dockerfile: Dockerfile
         image: producer:latest
         depends_on: 
             - rabbitmq
@@ -26,13 +26,14 @@ services:
         networks:
             - network
 
+
     consumer:
         build:
             context: .
             dockerfile: consumer/Dockerfile
         image: consumer:latest
         volumes:
-            - .:/app
+            - ./consumer:/app
         depends_on:
             - rabbitmq
         ports:
@@ -42,8 +43,6 @@ services:
             - AMQP_URL=amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou
         networks:
             - network
-
-
 
 networks:
     # Declare our private network.  We must declare one for the magic
