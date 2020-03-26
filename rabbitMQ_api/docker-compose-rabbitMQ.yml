@@ -11,7 +11,7 @@ services:
             # HTTP management UI
             - '15672:15672'
         networks:
-            - network
+            - local_network
 
     producer:
         build:
@@ -24,7 +24,7 @@ services:
             - PYTHONPATH=${PYTHONPATH}:/app/src/producer.py
             - AMQP_URL=amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou
         networks:
-            - network
+            - local_network
 
 
     consumer:
@@ -42,9 +42,9 @@ services:
             - PYTHONPATH=${PYTHONPATH}:/app/src/consumer.py
             - AMQP_URL=amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou
         networks:
-            - network
+            - local_network
 
 networks:
     # Declare our private network.  We must declare one for the magic
     # Docker DNS to work, but otherwise its default settings are fine.
-    network: {}
+    local_network: {}
