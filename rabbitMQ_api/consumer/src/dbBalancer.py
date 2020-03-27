@@ -1,15 +1,12 @@
 from __future__ import print_function
-# import mysql.connector
+import mysql.connector
 import os
 import re
 import datetime
 import itertools
-# from mysql.connector import errorcode
+from mysql.connector import errorcode
 from dotenv import load_dotenv
 from pathlib import Path
-
-
-MY_TABLE = "clients"
 
 class dbConnection():
 
@@ -37,16 +34,17 @@ class dbConnection():
         self.password=os.getenv("PASSWORD")
         self.host=os.getenv("HOST")
         self.database=os.getenv("DATABASE")
+        self.table=os.getenv("MYTABLE")
 
     
     def stablishConnection(self, data):
         try:
             self.connection = mysql.connector.connect(user=self.user, password=self.password,
-                                                host=self.host,
-                                                database=self.database)
+                                                host=self.host)
             # print("Connection Stablished as {} ".format(self.user))
-            self.cursor =  self.connection.cursor()
-            self.checkTable()
+            self.cursor =  self.connection.cursor(buffered=True)
+            self.checkDataBase(self.database)
+            self.checkTable(self.table)
             self.insertTuples(data)
 
         except mysql.connector.Error as err:
@@ -60,6 +58,16 @@ class dbConnection():
             self.cursor.close()
             self.connection.close()
 
+
+    def checkDataBase(self, dataBase):
+        data_query = """CREATE DATABASE IF NOT EXISTS `%s`;""" %(dataBase)
+        base_query = """USE `%s`;""" % (dataBase)
+        try:
+            self.cursor.execute(data_query)
+            print("Connecting to {} ...".format(dataBase))
+            self.cursor.execute(base_query)
+        except mysql.connector.Error as err:
+            print(err)
 
     def createTable(self, tableName):
         TABLES = {}
@@ -83,14 +91,13 @@ class dbConnection():
         self.table = tableName
 
 
-    def checkTable(self):
+    def checkTable(self, tableName):
         self.cursor.execute("""SHOW TABLES""")
         rows = self.cursor.fetchall()
         my_tables = list(itertools.chain(*rows))
-        if MY_TABLE not in my_tables:
+        if tableName not in my_tables:
             print("creating")
-            self.createTable(MY_TABLE)
-        self.table = MY_TABLE
+            self.createTable(tableName)
 
         
     def insertTuples(self, data):
@@ -98,6 +105,7 @@ class dbConnection():
         # print(data)
         self.cursor.execute("""INSERT INTO `%s` (name, price, date) VALUES ('%s', '%s' , '%s') ;""" %(self.table, data[1], data[2], data[3],))
         self.connection.commit()
+        print("Data inserted successfully: {}".format(data))
         
 
     def getData(self, tableName):
@@ -122,7 +130,6 @@ class dbConnection():
         myData = data.split(' ')
         return myData
 
-#if __name__ == "__main__":
-    #mySQL = dbConnection()
-    #mySQL.formatInfo("0_Telefonica_208_(2020-03-14)")
-    #mySQL.enableConnection()
+if __name__ == "__main__":
+    mySQL = dbConnection()
+    mySQL.enableConnection("0_Telefonica_208_(2020-03-14)")
