@@ -28,12 +28,12 @@ LOG_FILE = DATE.strftime('%b_%d_%Y') + ".txt"
 LOG_TEMP = "temp-"+ LOG_FILE
 
 # Docker Log Route
-LOG_ROUTE = os.path.dirname(__file__) + '/logs/'
+# LOG_ROUTE = os.path.dirname(__file__) + '/logs/'
 
 
 """ TROUBLESHOOTING """
 # Windows alternative Route
-# LOG_ROUTE = os.path.abspath(os.curdir) + '/logs/'
+LOG_ROUTE = os.path.abspath(os.curdir) + '/logs/'
 
 # Only for Docker Image (Linux)
 # LOG_ROUTE = os.path.dirname(os.path.relpath(__file__)) + '/logs/'
@@ -111,11 +111,11 @@ def saveFile(msg):
         file_temp.write("\n" + temp_msg)
         file.close()
         # Database Import
-        #myDatabase = dbBalancer.dbConnection()
-        # threadSave = Thread(target=myDatabase.enableConnection(temp_msg))
-        #threadSave.start()
-        # threadData = Thread(target=myDatabase.getData(dbBalancer.MY_TABLE))
-        #threadData.start()
+        myDatabase = dbBalancer.dbConnection()
+        threadSave = Thread(target=myDatabase.enableConnection(temp_msg))
+        threadSave.start()
+        threadData = Thread(target=myDatabase.getData(dbBalancer.MY_TABLE))
+        threadData.start()
 
     except IOError:
         file = open(LOG_ROUTE + LOG_FILE, "w+")
