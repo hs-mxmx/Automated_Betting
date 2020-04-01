@@ -8,20 +8,24 @@ from datetime import datetime
 from threading import Thread
 import dbBalancer
 import logging
+from dotenv import load_dotenv
+from pathlib import Path
+import informer
 
 # Create Flask instance
 app = Flask(__name__)
 
-# RabbitMQ exchange
-EXCHANGE = 'my_exchange'
-
-# Name of rabbitMQ queue
-QUEUE = 'my_queue'
+# readEnv
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
+EXCHANGE=os.getenv("EXCHANGE")
+QUEUE=os.getenv("QUEUE")
+AMQP_URL=os.getenv("AMQP_URL")
+MYTABLE=os.getenv("MYTABLE")
+BACKUP_ROUTE=os.getenv("BACKUP_ROUTE")
 
 # Current Date
 DATE = datetime.now()
-
-
 
 # Log file
 LOG_FILE = DATE.strftime('%b_%d_%Y') + ".txt"
@@ -29,7 +33,6 @@ LOG_TEMP = "temp-"+ LOG_FILE
 
 # Docker Log Route
 # LOG_ROUTE = os.path.dirname(__file__) + '/logs/'
-
 
 """ TROUBLESHOOTING """
 # Windows alternative Route
@@ -40,8 +43,9 @@ LOG_ROUTE = os.path.abspath(os.curdir) + '/logs/'
 
 def main():
     # Location of RabbitMQ server from AMQP_URL variable
-    amqp_url =  "amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou"
-    # print('URL: %s' % (amqp_url))
+    # amqp_url = os.environ['AMQP_URL']
+    # if amqp_url=='':amqp_url =  "amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou"
+    amqp_url=os.getenv('AMQP_URL')
 
     # Stablish connection
     parameters = pika.URLParameters(amqp_url)
@@ -55,49 +59,39 @@ def main():
 
 
 def opened_connection(connection):
-    # Connection stablished
-    # print("[!] Starting channel...")
+    """Connection stablished"""
     channel = connection.channel()
     opened_qos(channel,connection)
 
 
 def opened_qos(channel, connection):
-    # print("[+] Queue QoS...")
+    """QoS Queue"""
     channel.basic_qos(prefetch_count=1, 
     callback=opened_queue(channel,connection))
 
+
 def opened_queue(channel, connection):
-    # print("[+] Queue opened...")
+    """Opened Queue"""
     channel.queue_bind(queue=QUEUE, exchange= '', routing_key=QUEUE, callback=open_message(channel, connection))
 
+
 def callback(ch, method, properties, body):
-    # print("Callback")
     read_message(body)
 
+
 def open_message(channel, connection):
-    # print("Opening messages...")
     channel.basic_consume(queue=QUEUE, on_message_callback=callback, auto_ack=True)
     print("Waiting for messages...")
     thread = Thread(channel.start_consuming())
     thread.start()
 
+
 def read_message(msg):
-#   print("[+] Reading messages: \n")
     msg = msg.decode("utf-8")
-#   q.put(msg)
-#   for elem in q.queue: 
     saveFile(msg)
-    # temp_message = read_tempFile("temp-2020-03-13.txt")
-    # print("Messages: %r " % temp_message)
     print("Message: %r " % msg)
     time.sleep(1)
     return
-
-def read_tempFile(logfile):
-    my_temp_list = []
-    with open(logfile, "r")as my_file: data = my_file.read().replace('\n', ' ')
-    my_temp_list = list(data.split(' '))
-    return my_temp_list
 
 
 def saveFile(msg):
@@ -114,8 +108,11 @@ def saveFile(msg):
         myDatabase = dbBalancer.dbConnection()
         threadSave = Thread(target=myDatabase.enableConnection(temp_msg))
         threadSave.start()
-        threadData = Thread(target=myDatabase.getData(dbBalancer.MY_TABLE))
-        threadData.start()
+        # threadData = Thread(target=myDatabase.getData(MYTABLE))
+        # threadData.start()
+        if(str(datetime.now().hour)+':'+str(datetime.now().minute)=='21:44'):
+            if(int(datetime.now().second)>=0 and int(datetime.now().second)<=59):
+                Thread(target=informer.main()).start()
 
     except IOError:
         file = open(LOG_ROUTE + LOG_FILE, "w+")
@@ -130,13 +127,15 @@ def saveFile(msg):
 @app.route('/')
 @app.route('/index')
 def index():
-    temp_message = read_tempFile(LOG_ROUTE + "temp-Mar_14_2020.txt")
-    print("Messages: %r " % temp_message)
+    temp_message = read_tempFile(LOG_ROUTE + "temp-Mar_31_2020.txt")
+    # print("Messages: %r " % temp_message)
     return render_template('index.html', title='Index', data=temp_message)
+
 
 @app.route('/home')
 def home():
     return render_template('index.html', title='Home', data='Home')
+
 
 if __name__ == '__main__':
     log = logging.getLogger('werkzeug')
@@ -145,3 +144,12 @@ if __name__ == '__main__':
     thread.daemon = True
     thread.start()
     Thread(target=app.run(debug=True, host='0.0.0.0')).start()
+
+
+
+
+# def read_tempFile(logfile):
+#     my_temp_list = []
+#     with open(logfile, "r")as my_file: data = my_file.read().replace('\n', ' ')
+#     my_temp_list = list(data.split(' '))
+#     return my_temp_list

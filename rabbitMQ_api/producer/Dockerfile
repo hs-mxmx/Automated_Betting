@@ -20,6 +20,7 @@ ADD . ${BASE_DIR}/${MY_MODULE}
 
 ENV PYTHONPATH=$PYTHONPATH:${BASE_DIR}
 ENV PYTHONPATH=${PYTHONPATH}:${MY_MODULE}
+ENV AMQP_URL='amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou'
 
 WORKDIR ${BASE_DIR}
 

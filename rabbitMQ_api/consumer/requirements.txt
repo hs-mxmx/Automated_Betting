@@ -1,6 +1,5 @@
 pika==1.1.0
 Flask==1.1.1
-mysql-connector-python==8.0.19
 #numpy==1.16.2
 #pandas==0.24.2
 #pylint==2.3.1

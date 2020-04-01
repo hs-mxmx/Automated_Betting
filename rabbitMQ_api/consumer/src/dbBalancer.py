@@ -64,42 +64,38 @@ class dbConnection():
         base_query = """USE `%s`;""" % (dataBase)
         try:
             self.cursor.execute(data_query)
-            print("Connecting to {} ...".format(dataBase))
+            # print("Connecting to {} ...".format(dataBase))
             self.cursor.execute(base_query)
         except mysql.connector.Error as err:
             print(err)
+        else:
+            pass
+            # print("Database {} was created succesfully!".format(dataBase))
 
-    def createTable(self, tableName):
+
+    def checkTable(self, tableName):
         TABLES = {}
         TABLES[tableName] = (
-        "CREATE TABLE `clients` ("
+        "CREATE TABLE IF NOT EXISTS `clients` ("
         # "  `id` int(11) NOT NULL AUTO_INCREMENT,"
         "  `name` varchar(16) NOT NULL,"
         "  `price` varchar(16) NOT NULL,"
         "  `date` date NOT NULL"
         #"  PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB")
-
         myTable_description = TABLES[tableName]
         try:
-            print("Creating table {}: ".format(tableName))
+            # print("Creating table {}: ".format(tableName))
             self.cursor.execute(myTable_description)
         except mysql.connector.Error as err:
-            print(err.msg)
+            pass
+            # print(err.msg)
         else:
-            print("Table {} was created succesfully!".format(tableName))
+            pass
+            # print("Table {} was created succesfully!".format(tableName))
         self.table = tableName
-
-
-    def checkTable(self, tableName):
-        self.cursor.execute("""SHOW TABLES""")
-        rows = self.cursor.fetchall()
-        my_tables = list(itertools.chain(*rows))
-        if tableName not in my_tables:
-            print("creating")
-            self.createTable(tableName)
-
         
+
     def insertTuples(self, data):
         data = self.formatInfo(data)
         # print(data)
@@ -114,7 +110,6 @@ class dbConnection():
         self.connection = mysql.connector.connect(user=self.user, password=self.password,
                                                 host=self.host,
                                                 database=self.database)
-            # print("Connection Stablished as {} ".format(self.user))
         self.cursor =  self.connection.cursor()
         self.cursor.execute("""SELECT * FROM `%s` ;""" %(tableName))
         raw_data = self.cursor.fetchall()
@@ -129,6 +124,7 @@ class dbConnection():
             data = data.replace(i, j)
         myData = data.split(' ')
         return myData
+        
 
 if __name__ == "__main__":
     mySQL = dbConnection()
