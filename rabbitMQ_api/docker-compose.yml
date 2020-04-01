@@ -1,0 +1,98 @@
+
+    # mysql:
+    #   image: mysql:8.0.19
+    #   environment:
+    #     MYSQL_ROOT_PASSWORD: aaddmmiinn
+    #   ports:
+    #     - "3306:3306"
+    #   command: --lower_case_table_names=1
+    #   networks:
+    #     - local_network
+    #   volumes:
+    #     - "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Data:/var/lib/mysql"
+    
+  # my_router:
+  #   image: mysql/mysql-router:8.0.18
+  #   environment: 
+  #       MYSQL_HOST: localhost
+  #       MYSQL_USER: root 
+  #       MYSQL_PORT: 3308
+  #       MYSQL_PASSWORD: aaddmmiinn
+  #   links:
+  #       - mysql
+
+
+    # adminer_container:
+    #     image: adminer:latest
+    #     environment:
+    #         ADMINER_DEFAULT_SERVER: mysql_master
+    #     ports:
+    #         - 8080:8080
+    #     networks:
+    #         - local_network
+
+version: '3'
+
+services:
+    
+        # db:
+        #     image: mysql:8.0.19
+        #     restart: always
+        #     environment:
+        #       MYSQL_ROOT_PASSWORD: aaddmmiinn
+        #       MYSQL_DATABASE: myclients
+        #       MYSQL_USER: myadmin
+        #       MYSQL_PASSWORD: aaddmmiinn
+        #     volumes:
+        #         - "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Data:/var/lib/mysql"
+        #         - "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\my_docker.ini:/etc/mysql/my.cnf"
+        #     command: --lower_case_table_names=1
+        #     networks:
+        #         - local_network
+        #     ports:
+        #         - '3306:3306'
+    
+        rabbitmq:
+            image: rabbitmq:management-alpine
+            ports:
+                # The standard AMQP protocol port
+                - '5672:5672'
+                # HTTP management UI
+                - '15672:15672'
+            networks:
+                - local_network
+            
+        producer:
+            build:
+                context: producer/
+                dockerfile: Dockerfile
+            image: producer:latest
+            depends_on: 
+                - rabbitmq
+            links:
+                - rabbitmq
+
+        consumer:
+            build:
+                context: .
+                dockerfile: consumer/Dockerfile
+            image: consumer:latest
+            volumes:
+                - "./consumer:/app/consumer:rw"
+            depends_on:
+                - rabbitmq
+            ports:
+                - "5000:5000"
+            networks: 
+                - local_network
+            links:
+            #    - db
+
+
+# volumes:
+#     my-datavolume:
+
+networks:
+    # Declare our private network.  We must declare one for the magic
+    # Docker DNS to work, but otherwise its default settings are fine.
+    local_network: {}

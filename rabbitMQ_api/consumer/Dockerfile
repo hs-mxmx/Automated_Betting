@@ -20,11 +20,16 @@ ADD ${MY_MODULE} ${BASE_DIR}/${MY_MODULE}
 
 ENV PYTHONPATH=$PYTHONPATH:${BASE_DIR}
 ENV PYTHONPATH=${PYTHONPATH}:${MY_MODULE}
+ENV AMQP_URL='amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou'
+ENV MYSQL_ROOT_PASSWORD='aaddmmiinn'
+ENV MYSQL_USER='myadmin'
+ENV MYSQL_PASSWORD='aaddmmiinn'
 
 WORKDIR ${BASE_DIR}
 
 RUN pip3 install --upgrade pip setuptools wheel && \
-    pip install -r ${BASE_DIR}/requirements.txt
+    pip install -r ${BASE_DIR}/requirements.txt && \
+    pip install mysql-connector
 
 
 ENTRYPOINT [ "python" ]
