@@ -43,8 +43,6 @@ LOG_ROUTE = os.path.abspath(os.curdir) + '/logs/'
 
 def main():
     # Location of RabbitMQ server from AMQP_URL variable
-    # amqp_url = os.environ['AMQP_URL']
-    # if amqp_url=='':amqp_url =  "amqp://xxalaqou:dQFGDDlp-pfhSolv57XHhVWeqmzcmD6l@crow.rmq.cloudamqp.com/xxalaqou"
     amqp_url=os.getenv('AMQP_URL')
 
     # Stablish connection
@@ -95,6 +93,10 @@ def read_message(msg):
 
 
 def saveFile(msg):
+    """
+    Stores content [[Month_Day_Year]].txt on /logs 
+    and calls main method from informer to execute SMTP and backup
+    """
     temp_msg = msg
     msg = "[" + str(datetime.time(datetime.now())) + "]: " + msg
     try:
@@ -110,7 +112,7 @@ def saveFile(msg):
         threadSave.start()
         # threadData = Thread(target=myDatabase.getData(MYTABLE))
         # threadData.start()
-        if(str(datetime.now().hour)+':'+str(datetime.now().minute)=='21:44'):
+        if(str(datetime.now().hour)+':'+str(datetime.now().minute)=='12:40'):
             if(int(datetime.now().second)>=0 and int(datetime.now().second)<=59):
                 Thread(target=informer.main()).start()
 
