@@ -53,6 +53,10 @@ def read_template(filename):
         exit
 
 def main():
+    """
+    Main method that lists the files from backup directory 
+    and executes the initializeBackup method to monitorize
+    """
     while True:
         BACKUP= [file for file in os.listdir(BACKUP_ROUTE) if os.path.isfile(os.path.join(BACKUP_ROUTE, file))]
         if LOG_FILE in BACKUP:
@@ -62,32 +66,12 @@ def main():
     exit
 
 
-def myEventHandler():
-    patterns = "*"
-    ignore_patterns = ""
-    ignore_directories = False
-    case_sensitive = True
-    my_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories, case_sensitive)
-    my_event_handler.on_created = initializeBackupEvent
-    return my_event_handler
-
-
-def myObserver():
-    path = "."
-    go_recursively = True
-    my_observer = Observer()
-    my_observer.schedule(myEventHandler(), path, recursive=go_recursively)
-    my_observer.start()
-    try: main()
-    except KeyboardInterrupt:
-        my_observer.stop()
-        my_observer.join()
-
-
-def initializeBackupEvent(event):
-    initializeBackup()
-
 def initializeBackup():
+    """
+    Stores content [[Month_Day_Year]].txt from logs into backup
+    and send it to my_contacts via SMTP onto outlook params
+    when consumer executes the thread in saveFile
+    """
     if LOG_FILE not in BACKUP:
         names, emails = contacts('my_contacts.txt') # read contacts
         message_template = read_template('logs/' + LOG_FILE)
@@ -126,3 +110,41 @@ def initializeBackup():
 
 if __name__ == '__main__':
     main()
+    
+
+"""
+Monitorize Functions
+"""
+
+# def myEventHandler():
+#     """
+#     Returns an Event Handler in order to monitorize the
+#     files created on backup to send the mail in case of delay
+#     """
+#     patterns = "*"
+#     ignore_patterns = ""
+#     ignore_directories = False
+#     case_sensitive = True
+#     my_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories, case_sensitive)
+#     my_event_handler.on_created = initializeBackupEvent
+#     return my_event_handler
+
+
+# def myObserver():
+#     """
+#     Observer thread created to monitorize the event referenced on
+#     my EventHandler on created function
+#     """
+#     path = "."
+#     go_recursively = True
+#     my_observer = Observer()
+#     my_observer.schedule(myEventHandler(), path, recursive=go_recursively)
+#     my_observer.start()
+#     try: main()
+#     except KeyboardInterrupt:
+#         my_observer.stop()
+#         my_observer.join()
+
+
+# def initializeBackupEvent(event):
+#     initializeBackup()

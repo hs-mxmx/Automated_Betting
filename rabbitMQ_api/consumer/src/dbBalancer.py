@@ -28,6 +28,9 @@ class dbConnection():
     
 
     def readEnv(self):
+        """
+        Read environment variables from .env file
+        """
         env_path = Path('.') / '.env'
         load_dotenv(dotenv_path=env_path)
         self.user=os.getenv("USER")
@@ -38,6 +41,10 @@ class dbConnection():
 
     
     def stablishConnection(self, data):
+        """
+        MYSQL connection handler automated in order to
+        be deployed successfully via Docker
+        """
         try:
             self.connection = mysql.connector.connect(user=self.user, password=self.password,
                                                 host=self.host)
@@ -60,6 +67,9 @@ class dbConnection():
 
 
     def checkDataBase(self, dataBase):
+        """
+        Query to check and create if env database exists or not
+        """
         data_query = """CREATE DATABASE IF NOT EXISTS `%s`;""" %(dataBase)
         base_query = """USE `%s`;""" % (dataBase)
         try:
@@ -74,6 +84,9 @@ class dbConnection():
 
 
     def checkTable(self, tableName):
+        """
+        Query to check and create if env tablename exists or not
+        """
         TABLES = {}
         TABLES[tableName] = (
         "CREATE TABLE IF NOT EXISTS `clients` ("
@@ -97,6 +110,9 @@ class dbConnection():
         
 
     def insertTuples(self, data):
+        """
+        Query to insert tuples from consumer
+        """
         data = self.formatInfo(data)
         # print(data)
         self.cursor.execute("""INSERT INTO `%s` (name, price, date) VALUES ('%s', '%s' , '%s') ;""" %(self.table, data[1], data[2], data[3],))
@@ -105,6 +121,9 @@ class dbConnection():
         
 
     def getData(self, tableName):
+        """
+        Query to get tuples from env table name
+        """
         print(tableName)
         self.readEnv()
         self.connection = mysql.connector.connect(user=self.user, password=self.password,
@@ -118,6 +137,10 @@ class dbConnection():
                 
 
     def formatInfo(self, data):
+        """
+        Method to format info received from producer in order
+        to be stored into the database
+        """
         replace_strings = {"_" : " ", "(" : "", ")" : ""}
         myData = []
         for i, j in replace_strings.items():
