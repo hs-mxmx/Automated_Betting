@@ -22,24 +22,16 @@ class dbConnection():
 
     def enableConnection(self, data):
         if self.user == '':
-            # print("Finding credentials...") 
-            self.readEnv()
+            env_path = Path('.') / '.env'
+            load_dotenv(dotenv_path=env_path)
+            self.user=os.getenv("USER")
+            self.password=os.getenv("PASSWORD")
+            self.host=os.getenv("HOST")
+            self.database=os.getenv("DATABASE")
+            self.table=os.getenv("MYTABLE")
         self.stablishConnection(data)
-    
 
-    def readEnv(self):
-        """
-        Read environment variables from .env file
-        """
-        env_path = Path('.') / '.env'
-        load_dotenv(dotenv_path=env_path)
-        self.user=os.getenv("USER")
-        self.password=os.getenv("PASSWORD")
-        self.host=os.getenv("HOST")
-        self.database=os.getenv("DATABASE")
-        self.table=os.getenv("MYTABLE")
 
-    
     def stablishConnection(self, data):
         """
         MYSQL connection handler automated in order to
@@ -48,7 +40,6 @@ class dbConnection():
         try:
             self.connection = mysql.connector.connect(user=self.user, password=self.password,
                                                 host=self.host)
-            # print("Connection Stablished as {} ".format(self.user))
             self.cursor =  self.connection.cursor(buffered=True)
             self.checkDataBase(self.database)
             self.checkTable(self.table)
@@ -74,13 +65,11 @@ class dbConnection():
         base_query = """USE `%s`;""" % (dataBase)
         try:
             self.cursor.execute(data_query)
-            # print("Connecting to {} ...".format(dataBase))
             self.cursor.execute(base_query)
         except mysql.connector.Error as err:
             print(err)
         else:
             pass
-            # print("Database {} was created succesfully!".format(dataBase))
 
 
     def checkTable(self, tableName):
@@ -98,14 +87,11 @@ class dbConnection():
         ") ENGINE=InnoDB")
         myTable_description = TABLES[tableName]
         try:
-            # print("Creating table {}: ".format(tableName))
             self.cursor.execute(myTable_description)
-        except mysql.connector.Error as err:
+        except mysql.connector.Error:
             pass
-            # print(err.msg)
         else:
             pass
-            # print("Table {} was created succesfully!".format(tableName))
         self.table = tableName
         
 
@@ -113,7 +99,10 @@ class dbConnection():
         """
         Query to insert tuples from consumer
         """
-        data = self.formatInfo(data)
+        replace_strings = {"_" : " ", "(" : "", ")" : ""}
+        for i, j in replace_strings.items():
+            data = data.replace(i, j)
+        data = list(data.split(' '))
         # print(data)
         self.cursor.execute("""INSERT INTO `%s` (name, price, date) VALUES ('%s', '%s' , '%s') ;""" %(self.table, data[1], data[2], data[3],))
         self.connection.commit()
@@ -134,19 +123,6 @@ class dbConnection():
         raw_data = self.cursor.fetchall()
         myData = list(itertools.chain(*raw_data))
         for item in myData: print(item)
-                
-
-    def formatInfo(self, data):
-        """
-        Method to format info received from producer in order
-        to be stored into the database
-        """
-        replace_strings = {"_" : " ", "(" : "", ")" : ""}
-        myData = []
-        for i, j in replace_strings.items():
-            data = data.replace(i, j)
-        myData = data.split(' ')
-        return myData
         
 
 if __name__ == "__main__":

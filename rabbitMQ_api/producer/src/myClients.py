@@ -30,5 +30,3 @@ class myClients:
 
     def main(self):
         self.createClient()
-
-        
