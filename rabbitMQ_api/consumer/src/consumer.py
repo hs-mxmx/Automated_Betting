@@ -2,8 +2,6 @@ import pika
 import time
 import os
 import queue
-from flask import Flask
-from flask import render_template
 from datetime import datetime
 from threading import Thread
 import dbBalancer
@@ -132,8 +130,3 @@ if __name__ == '__main__':
 
 
 
-# def read_tempFile(logfile):
-#     my_temp_list = []
-#     with open(logfile, "r")as my_file: data = my_file.read().replace('\n', ' ')
-#     my_temp_list = list(data.split(' '))
-#     return my_temp_list

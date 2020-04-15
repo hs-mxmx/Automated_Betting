@@ -1,10 +1,29 @@
+<!DOCTYPE html>
 <html>
-    <head>
-       <title>{{ tittle }}</title>
-    </head>
+	<head lang="es">
+		<meta charset="utf-8">
+		<title>Automated Betting Companies</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+		<link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Caladea|Oswald&display=swap" rel="stylesheet">
+	</head>
     <body>
-        {% for item in data %}
-        <p>{{ item }} </p>
-        {% endfor %}
+        <header class="encabezado" id="0">
+            <h1>Automated Betting Companies<br></h1>
+        </header>
+        <main>
+            <section class="seccion" id="1">
+                {% for table in tables %}
+                    {{ table|safe }}
+                {% endfor %}
+            </section>
+            <div id="readMore">
+                <button id="readButton">Read More</button>
+            </div>
+        </main>
     </body>
 </html>
+
+<!-- {% for item in data %}
+<p>{{ item }} </p   >
+{% endfor %} -->

@@ -1,0 +1,236 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+body {
+    /* Azul */
+    background-image:linear-gradient(to right, #005383,  #00598C, 
+     #00629A, #006CA9, #0074B6, #0079BE, #0081CB, #008AD9); 
+    
+    /*Verde
+    background-image:linear-gradient(to right, #008869,  #009976,
+    #00A680, #00B68D, #00C69A, #00D2A3, #00E1AE, #00ECB6);
+    */
+    /*Morado*/
+    /* background-image:linear-gradient(to right, #414199,  #4949A8,
+    #5151B8, #5858C4, #5E5ECF, #6464DC, #6A6AE7, #7070F1); */
+    
+}
+
+td {
+    font-family: 'Caladea', serif;
+    text-align: justify;
+}
+
+h1, h2, h3 , h4 {
+    font-family: 'Oswald', sans-serif;
+}
+
+h2 {
+    color: #B45A00;
+    margin-bottom: 20px;
+}
+h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h4 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style-position: inside;
+}
+
+li {
+    margin: 0 0 3px 0;
+}
+
+a {
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    color: white;   
+}
+
+.enlace {
+    display: inline-block;
+    background-color: #001C2C;
+    border-radius: 15px;
+    padding: 5px;
+    margin-top: 15px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 1);
+}
+
+.enlace:hover {
+    background-image:linear-gradient(to right, #B45A00,  #BD5F00,
+    #C66300, #CE6700, #D56B00, #DA6D00, #E07000, #E57300);;
+}
+
+.encabezado {
+    background-color:#001C2C;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0px 1px 15px rgba(0, 0, 0, 1);
+    font-family: 'Oswald', sans-serif;
+    margin-bottom: 50px;
+}
+
+.titulo {
+    font-size: 80px;
+    text-align: center;
+    margin: 20px;
+    color: white;
+    text-shadow: 0px 2px 10px rgba(0, 0, 0, 1);
+    font-family: 'Oswald', sans-serif;
+}
+
+.navegacion {
+    z-index: 1;
+    display: flex;
+    position: fixed;
+    justify-content: flex-end;
+    right: 0;
+    background-color: #001C2C;
+    height: 40px;
+    top: 10px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 1);
+}
+
+.boton {
+    padding: 10px;
+    margin: 0;
+}
+.boton:hover {
+    background-color: #D56B00
+}
+
+.index {
+    background-color: #001C2C;
+    margin-top: 10px;
+    height: 40px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 1);
+    text-align: center;
+    padding: 10px;
+    font-family: 'Oswald', sans-serif;
+    list-style-position: outside;
+}
+.index:hover {
+    text-shadow: 0px 1px 5px rgba(255, 255, 255, 1);
+}
+
+.seccion {
+    position: relative;
+    display: block;
+    padding: 15px;
+    box-shadow: 0px 1px 15px rgba(0, 0, 0, 1);
+    background: white;
+    color: black;
+    margin: 20px;
+    margin-right: 300px;
+    margin-left: 300px;
+    border-radius:  2%;
+}
+
+.pie {
+    height: 100px;
+    width: 100%;
+    background-color: #001C2C;
+    box-shadow: 0px 1px 15px rgba(0, 0, 0, 1);
+}
+
+.foot {
+    padding-bottom: 20px;
+    text-align: right;
+}
+
+table {
+    width: 100%;
+    border: 0px;
+}
+
+table thead{
+    border: 0 px;
+}
+
+table tbody{
+    border: 0px;
+}
+
+table.dataframe th{
+    background-color:white;
+    color: white;
+    text-align: center;
+    border: 0px;
+}
+
+table.dataframe th:not(:empty){
+    background-color:#001C2C;
+    border-bottom: 2px solid black;
+    margin-bottom: 10px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 1);
+    color: white;
+    border-radius: 10%;
+    text-align: center;     
+} 
+
+table.dataframe td{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: 100%;
+    border-bottom: 1px solid #ddd;
+    border: 0px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+table.dataframe tbody th:not(:empty){
+    background-image:linear-gradient(to right, #414199,  #4949A8,
+    #5151B8, #5858C4, #5E5ECF, #6464DC, #6A6AE7, #7070F1); 
+    color: white;
+    border-radius:  30%;
+    width: 30px;
+    height: 30px;
+    text-align: center;   
+}
+   
+.import_images img{
+    display: block;
+    margin-left: 25%;
+    padding-top: 50px;
+    padding-bottom: 70px;
+    width: 50%;
+    height: 50%;
+}
+
+#readMore {
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 1px 15px rgba(0, 0, 0, 1);
+    margin-right: 300px;
+    margin-left: 300px;
+    margin-bottom: 20px;
+    border-radius: 10%;
+}
+
+#readButton {
+    opacity:0.6;
+    height: 100%;
+    width: 100%;
+    font-size: 20px;
+    font-family: 'Oswald', sans-serif;
+    border-radius: 10%;
+}
+
+#readButton:hover {
+    opacity:1;
+    animation-name: appearProjectDesc;
+    animation-duration: 0.5s;
+    cursor: pointer;
+}
