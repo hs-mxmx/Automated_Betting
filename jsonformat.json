@@ -1,0 +1,54 @@
+{
+    "Providers": {
+        "Provider1": {
+            "MetaData": [
+                {
+                    "name": "name1",
+                    "country": "country1",
+                    "date": "date1",
+                    "content": "content1",
+                    "contenType": "type1"
+                },
+                {
+                    "name": "name2",
+                    "country": "country1",
+                    "date": "date1",
+                    "content": "content2",
+                    "type": "type2"
+                },
+                {
+                    "name": "name3",
+                    "country": "country2",
+                    "date": "date1",
+                    "content": "content3",
+                    "type": "typ1"
+                }
+            ]
+        },
+        "Provider2": {
+            "MetaData": [
+                {
+                    "name": "name1",
+                    "country": "country1",
+                    "date": "date1",
+                    "content": "content1",
+                    "type": "type1"
+                },
+                {
+                    "name": "name2",
+                    "country": "country1",
+                    "date": "date1",
+                    "content": "content2",
+                    "type": "type2"
+                },
+                {
+                    "name": "name3",
+                    "country": "country2",
+                    "date": "date1",
+                    "content": "content3",
+                    "type": "typ1"
+                }
+            ]
+        }
+    }
+}

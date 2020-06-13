@@ -1,7 +1,7 @@
 import pika
 import time
 import os
-import myClients
+import provider_data as pv
 import random
 from dotenv import load_dotenv
 from pathlib import Path
@@ -41,17 +41,14 @@ class Producer:
         channel = connection.channel()
         self.send_message(channel)
 
-
+    
     def send_message(self, channel):
-        MAX_CLIENTS = 5
-        myClient = myClients.myClients(random.randint(0,MAX_CLIENTS),'','','')
-        myClient.createClient()
-        msg = "{}_{}_{}_({})".format(myClient.id, myClient.company, myClient.price, myClient.date)
+        provider = pv.Provider()
+        msg = provider.generate_provider()
         channel.basic_publish(exchange='', routing_key=self.queue, body=msg)
         print("[*] Message published: {} ".format(msg))
         time.sleep(2)
         self.send_message(channel)
-
 
 
 if __name__ == '__main__':

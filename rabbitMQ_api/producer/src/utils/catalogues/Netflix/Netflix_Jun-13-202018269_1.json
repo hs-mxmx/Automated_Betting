@@ -1,0 +1,90 @@
+{
+    "Netflix": {
+        "Metadata": [
+            {
+                "contenType": "Application",
+                "content": "Sport",
+                "country": "Switzerland",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Audio",
+                "content": "Serie",
+                "country": "Switzerland",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Message",
+                "content": "Documental",
+                "country": "Australia",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Example",
+                "content": "Anime",
+                "country": "Japan",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Model",
+                "content": "Serie",
+                "country": "UnitedKingdom",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Example",
+                "content": "Show",
+                "country": "Canada",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Model",
+                "content": "Show",
+                "country": "Switzerland",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Example",
+                "content": "Announcement",
+                "country": "Spain",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Model",
+                "content": "Documental",
+                "country": "Sweden",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Message",
+                "content": "Show",
+                "country": "Spain",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Image",
+                "content": "Serie",
+                "country": "UnitedStates",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            },
+            {
+                "contenType": "Multipart",
+                "content": "Anime",
+                "country": "Australia",
+                "date": "Jun-13-202018269",
+                "name": "Netflix"
+            }
+        ]
+    }
+}
