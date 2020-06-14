@@ -14,6 +14,7 @@ class Provider:
         self.contentype = ""
         self.date = ""
         self.metadata = ""
+        self.metadata_content = ""
         self.new = True
         super().__init__()
 
@@ -77,10 +78,11 @@ class Provider:
             }
         }
         self.generate_file(provider_data)
+        self.metadata_content = provider_data
         self.metadata = (self.name + "_" + self.country + "_(" + self.date + ")_" \
                 + self.contentype + "_" + self.content)
         
-        return self.metadata
+        return self.metadata, self.metadata_content
         
 
 
@@ -94,7 +96,6 @@ class Provider:
 
     def generate_file(self, provider_data):
         current_dir = os.path.dirname(os.path.realpath(__file__))
-        print(current_dir)
         file = (self.name + '_' + self.date + '_1' + pm.FILE_EXTENSION)
         path = (current_dir + '/utils/catalogues/' + self.name + '/')
         file = self.check_file(path, file)
@@ -112,12 +113,9 @@ class Provider:
         try:
             if os.path.exists(path + file):
                 file = file.split('_')
-                provider = file[0]
-                date = file[1]
-                id = file[2]
-                id = id.split(pm.FILE_EXTENSION)
+                id = file[2].split(pm.FILE_EXTENSION)
                 new_id = '_' + str(int(id[0]) + 1)
-                new_file = (provider + '_' + date + new_id + pm.FILE_EXTENSION)
+                new_file = (file[0] + '_' + file[1] + new_id + pm.FILE_EXTENSION)
                 while os.path.exists(path + new_file):
                     new_file = self.check_file(path, new_file)
                 return new_file

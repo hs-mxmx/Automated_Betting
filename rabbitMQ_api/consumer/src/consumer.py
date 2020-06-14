@@ -10,6 +10,9 @@ from dotenv import load_dotenv
 from pathlib import Path
 import informer
 import flask_server 
+import json
+import utils.consumer_mapping as cm
+import ast
 
 # Docker Log Route
 # LOG_ROUTE = os.path.dirname(__file__) + '/logs/'
@@ -101,6 +104,7 @@ class Consumer:
             file_temp = open(LOG_ROUTE + LOG_TEMP, "a")
             file_temp.write("\n" + temp_msg)
             file.close()
+            self.generate_file(temp_msg)
             # Database Import
             myDatabase = dbBalancer.dbConnection()
             threadSave = Thread(target=myDatabase.enableConnection(temp_msg))
@@ -112,6 +116,9 @@ class Consumer:
                     Thread(target=self.informer.main()).start()
 
         except IOError:
+            print(LOG_ROUTE)
+            if not os.path.isdir(LOG_ROUTE):
+                os.makedirs(LOG_ROUTE)
             file = open(LOG_ROUTE + LOG_FILE, "w+")
             file.write("\n" + msg)
             file.close()
@@ -119,7 +126,47 @@ class Consumer:
             file_temp.write("\n" + temp_msg)
             file_temp.close()
         
+ 
+    def generate_file(self, provider_data):
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        provider_data = ast.literal_eval(provider_data)
+        name, date = self.extract_metadata(provider_data)
+        file = (name + '_' + date + '_1' + cm.FILE_EXTENSION)
+        path = (current_dir + '/utils/catalogues/' + name + '/')
+        file = self.check_file(path, file)
+        try:
+            if not os.path.isdir(path):
+                os.makedirs(path)
+            with open(path + file, 'a') as jsonfile:
+                json.dump(provider_data, jsonfile, indent=4, separators=(',', ': '), sort_keys=True)
+            # self.check_file(file)
+        except Exception as ex:
+            print(ex)
+
         
+    def check_file(self, path, file):
+        try:
+            if os.path.exists(path + file):
+                file = file.split('_')
+                id = file[2].split('.')
+                new_id = '_' + str(int(id[0]) + 1)
+                new_file = (file[0] + '_' + file[1] + new_id + cm.FILE_EXTENSION)
+                while os.path.exists(path + new_file):
+                    new_file = self.check_file(path, new_file)
+                return new_file
+            return file
+        except Exception as ex:
+            print(ex)
+            pass
+
+    
+    def extract_metadata(self, content):
+        for k, v in content.items():
+            name = k
+            content = v
+        date = content.get(cm.METADATA)[0].get(cm.DATE)
+        return name, date
+              
 
 if __name__ == '__main__':
     my_consumer = Consumer()
