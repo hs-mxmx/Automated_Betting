@@ -13,7 +13,7 @@ import time
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 BACKUP_ROUTE=os.getenv('BACKUP_ROUTE')
-BACKUP= [file for file in os.listdir(BACKUP_ROUTE) if os.path.isfile(os.path.join(BACKUP_ROUTE, file))]
+BACKUP = [file for file in os.listdir(BACKUP_ROUTE) if os.path.isfile(os.path.join(BACKUP_ROUTE, file))]
 
 # Current Date
 DATE = datetime.now()

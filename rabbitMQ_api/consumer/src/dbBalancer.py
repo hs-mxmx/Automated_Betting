@@ -81,8 +81,10 @@ class dbConnection():
         "CREATE TABLE IF NOT EXISTS `clients` ("
         # "  `id` int(11) NOT NULL AUTO_INCREMENT,"
         "  `name` varchar(16) NOT NULL,"
-        "  `price` varchar(16) NOT NULL,"
-        "  `date` date NOT NULL"
+        "  `date` date NOT NULL,"
+        "  `contentType` varchar(16) NOT NULL,"
+        "  `content` varchar(16) NOT NULL,"
+        "  `country` varchar(16) NOT NULL"
         #"  PRIMARY KEY (`id`)"
         ") ENGINE=InnoDB")
         myTable_description = TABLES[tableName]
@@ -99,12 +101,7 @@ class dbConnection():
         """
         Query to insert tuples from consumer
         """
-        replace_strings = {"_" : " ", "(" : "", ")" : ""}
-        for i, j in replace_strings.items():
-            data = data.replace(i, j)
-        data = list(data.split(' '))
-        # print(data)
-        self.cursor.execute("""INSERT INTO `%s` (name, price, date) VALUES ('%s', '%s' , '%s') ;""" %(self.table, data[1], data[2], data[3],))
+        self.cursor.execute("""INSERT INTO `%s` (name, date, contentType, content, country) VALUES ('%s', '%s' , '%s', '%s', '%s') ;""" %(self.table, data[0], data[1], data[2], data[3], data[4],))
         self.connection.commit()
         print("Data inserted successfully: {}".format(data))
         
@@ -127,4 +124,6 @@ class dbConnection():
 
 if __name__ == "__main__":
     mySQL = dbConnection()
-    mySQL.enableConnection("0_Telefonica_208_(2020-03-14)")
+    mySQL.enableConnection(["Test", '2020-06-17', "Test", "Test", "Test"])
+
+

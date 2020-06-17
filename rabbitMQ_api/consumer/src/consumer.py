@@ -86,7 +86,6 @@ class Consumer:
     def read_message(self, msg):
         msg = msg.decode("utf-8")
         self.saveFile(msg)
-        print("Message: %r " % msg)
         time.sleep(1)
         return
 
@@ -105,10 +104,6 @@ class Consumer:
             file_temp.write("\n" + temp_msg)
             file.close()
             self.generate_file(temp_msg)
-            # Database Import
-            myDatabase = dbBalancer.dbConnection()
-            threadSave = Thread(target=myDatabase.enableConnection(temp_msg))
-            threadSave.start()
             # threadData = Thread(target=myDatabase.getData(MYTABLE))
             # threadData.start()
             if(str(datetime.now().hour)+':'+str(datetime.now().minute)=='12:40'):
@@ -161,12 +156,28 @@ class Consumer:
 
     
     def extract_metadata(self, content):
-        for k, v in content.items():
-            name = k
-            content = v
-        date = content.get(cm.METADATA)[0].get(cm.DATE)
-        return name, date
+        info_resume = []
+        for provider in content:
+            for items in content[provider][cm.METADATA]:
+                contentType = items[cm.CONTENTYPE]
+                content = items[cm.CONTENT]
+                country = items[cm.COUNTRY]
+                final_date = items[cm.DATE]
+                date = [final_date.split('_')]
+                date = date[0]
+                date = datetime.strptime(date[0], '%Y-%m-%d')
+                info_resume = [provider, date, contentType, content, country]
+                self.databaseImport(info_resume)
+
+
+        return provider, str(final_date)
               
+    
+    def databaseImport(self, info):
+        # Database Import
+        myDatabase = dbBalancer.dbConnection()
+        threadSave = Thread(target=myDatabase.enableConnection(info))
+        threadSave.start()
 
 if __name__ == '__main__':
     my_consumer = Consumer()
