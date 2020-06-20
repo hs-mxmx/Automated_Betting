@@ -20,7 +20,9 @@ class dbConnection():
         self.connection = ''
 
 
-    def enableConnection(self, data):
+    def enableConnection(self, data, provider):
+        # @param data Array
+        # @param provider String
         if self.user == '':
             env_path = Path('.') / '.env'
             load_dotenv(dotenv_path=env_path)
@@ -28,11 +30,12 @@ class dbConnection():
             self.password=os.getenv("PASSWORD")
             self.host=os.getenv("HOST")
             self.database=os.getenv("DATABASE")
-            self.table=os.getenv("MYTABLE")
+            self.table=provider.upper()
         self.stablishConnection(data)
 
 
     def stablishConnection(self, data):
+        # @param data Array
         """
         MYSQL connection handler automated in order to
         be deployed successfully via Docker
@@ -58,6 +61,7 @@ class dbConnection():
 
 
     def checkDataBase(self, dataBase):
+        # @param dataBase String
         """
         Query to check and create if env database exists or not
         """
@@ -73,20 +77,22 @@ class dbConnection():
 
 
     def checkTable(self, tableName):
+        # @param tableName String
         """
         Query to check and create if env tablename exists or not
         """
         TABLES = {}
         TABLES[tableName] = (
-        "CREATE TABLE IF NOT EXISTS `clients` ("
+        "CREATE TABLE IF NOT EXISTS `%s` ("
         # "  `id` int(11) NOT NULL AUTO_INCREMENT,"
         "  `name` varchar(16) NOT NULL,"
         "  `date` date NOT NULL,"
         "  `contentType` varchar(16) NOT NULL,"
         "  `content` varchar(16) NOT NULL,"
-        "  `country` varchar(16) NOT NULL"
+        "  `country` varchar(16) NOT NULL,"
+        "  `price` int(11) NOT NULL"
         #"  PRIMARY KEY (`id`)"
-        ") ENGINE=InnoDB")
+        ") ENGINE=InnoDB")%(tableName)
         myTable_description = TABLES[tableName]
         try:
             self.cursor.execute(myTable_description)
@@ -98,15 +104,17 @@ class dbConnection():
         
 
     def insertTuples(self, data):
+        # @param data Array
         """
         Query to insert tuples from consumer
         """
-        self.cursor.execute("""INSERT INTO `%s` (name, date, contentType, content, country) VALUES ('%s', '%s' , '%s', '%s', '%s') ;""" %(self.table, data[0], data[1], data[2], data[3], data[4],))
+        self.cursor.execute("""INSERT INTO `%s` (name, date, contentType, content, country, price) VALUES ('%s', '%s' , '%s', '%s', '%s', '%s') ;""" %(self.table, data[0], data[1], data[2], data[3], data[4], data[5]))
         self.connection.commit()
-        print("Data inserted successfully: {}".format(data))
+        # print("Data inserted successfully: {}".format(data))
         
 
     def getData(self, tableName):
+        # @param tableName String
         """
         Query to get tuples from env table name
         """
@@ -124,6 +132,6 @@ class dbConnection():
 
 if __name__ == "__main__":
     mySQL = dbConnection()
-    mySQL.enableConnection(["Test", '2020-06-17', "Test", "Test", "Test"])
+    mySQL.enableConnection(["Test", '2020-06-17', "Test", "Test", "Test"], 'IBM')
 
 

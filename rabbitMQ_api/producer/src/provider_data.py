@@ -1,5 +1,6 @@
 
 import utils.provider_mapping as pm
+import myClients as mc
 import random
 import os
 import json
@@ -13,29 +14,30 @@ class Provider:
         self.content = ""
         self.contentype = ""
         self.date = ""
+        self.price = 0
         self.metadata = ""
         self.metadata_content = ""
         self.new = True
         super().__init__()
 
 
-    def getData(self, data_class):
-        return random.randint(0, len(data_class)-1)
-
-
     def setData(self):
+        my_client = mc.myClients()
+        myc = my_client.main()
         if self.new:
-            pm.NAME = pm.name_class[self.getData(pm.name_class)]
+            pm.NAME = my_client.name
             self.name = pm.NAME
             self.new = False
-        pm.CONTENT = pm.content_class[self.getData(pm.content_class)]
-        pm.CONTENTYPE = pm.contentype_class[self.getData(pm.contentype_class)]
-        pm.COUNTRY = pm.country_class[self.getData(pm.country_class)]
-        pm.DATE = pm.date_class
+        pm.CONTENT = my_client.content
+        pm.CONTENTYPE = my_client.contentype
+        pm.COUNTRY = my_client.country
+        pm.DATE = my_client.date
+        pm.PRICE = my_client.price
         self.country = pm.COUNTRY
         self.content = pm.CONTENT
         self.contentype = pm.CONTENTYPE
         self.date = pm.DATE
+        self.price = pm.PRICE
 
 
     def generate_data(self):
@@ -44,13 +46,15 @@ class Provider:
             date = self.date
             content = self.content
             contenType = self.contentype
+            price = self.price
             
             metaData = {
                         "name": name,
                         "country": country,
                         "date": date,
                         "content": content,
-                        "contenType": contenType
+                        "contenType": contenType,
+                        "price": price
             }
 
             self.name = name
@@ -80,7 +84,7 @@ class Provider:
         self.generate_file(provider_data)
         self.metadata_content = provider_data
         self.metadata = (self.name + "_" + self.country + "_(" + self.date + ")_" \
-                + self.contentype + "_" + self.content)
+                + self.contentype + "_" + self.content + "_" + self.price)
         
         return self.metadata, self.metadata_content
         

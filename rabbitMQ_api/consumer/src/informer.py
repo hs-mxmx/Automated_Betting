@@ -8,36 +8,39 @@ from dotenv import load_dotenv
 from pathlib import Path
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
+import utils.consumer_mapping as cm
 import time
-
-env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
-BACKUP_ROUTE=os.getenv('BACKUP_ROUTE')
-BACKUP = [file for file in os.listdir(BACKUP_ROUTE) if os.path.isfile(os.path.join(BACKUP_ROUTE, file))]
-
-# Current Date
-DATE = datetime.now()
-# Log file
-LOG_FILE = DATE.strftime('%b_%d_%Y') + ".txt"
 
 class Informer:
 
+    def init(self):
+        self.file = ''
+        self.backup_route = ''
+        self.backup = ''
+        self.send = ''
+        self.check = False
+
+
     def contacts(self, filename):
+        # @param filename String
         names = []
         emails = []
         try:
             print(os.getcwd())
-            with open('utils/'+filename, 'r') as contacts_file:
+            file_route = cm.UTILS_ROUTE + filename
+            with open(file_route, 'r') as contacts_file:
                 for contact in contacts_file:
                     names.append(contact.split()[0])
                     emails.append(contact.split()[1])
             return names, emails
-        except:
+        except Exception as ex:
             print("No file called ",filename," was found...")
+            print(ex)
             exit
 
 
     def read_template(self, filename):
+        # @param filename String
         try:
             with open(filename, 'r') as template_file:
                 template_file_content = template_file.read()
@@ -47,30 +50,43 @@ class Informer:
             exit
 
 
-    def main(self):
-        while True:
-            BACKUP= [file for file in os.listdir(BACKUP_ROUTE) if os.path.isfile(os.path.join(BACKUP_ROUTE, file))]
-            if LOG_FILE in BACKUP:
-                break
-            self.initializeBackup()
-            time.sleep(1)
-        exit
+    def main(self, send_mail):
+        self.send = send_mail
+        if self.send == True:
+            env_path = Path('.') / cm.ENV
+            load_dotenv(dotenv_path=env_path)
+            self.file = datetime.now().strftime(cm.DATE_FORMAT) + cm.TXT
+            self.backup_route = os.getenv(cm.BACKUP_ROUTE)
+            self.backup = [file for file in os.listdir(self.backup_route) if os.path.isfile(os.path.join(self.backup_route, file))]
+            while True:
+                if self.file in self.backup:
+                    break
+                self.initializeBackup()
+                time.sleep(1)
+        else:
+            print("Exiting informer")
+            exit
 
 
     def initializeBackup(self):
-        if LOG_FILE not in BACKUP:
-            names, emails = self.contacts('my_contacts.txt')
-            message_template = self.read_template('logs/' + LOG_FILE)
-            log_file = open('logs/'+LOG_FILE, "r").read()
-            backup_file = open(BACKUP_ROUTE+LOG_FILE,"w+")
+        if self.file not in self.backup and self.send:
+            print("CHECK DONE")
+            self.send = False
+            my_contacts = cm.CONTACTS_ROUTE + cm.TXT
+            log_file = cm.LOGS + self.file
+            names, emails = self.contacts(my_contacts)
+            message_template = self.read_template(cm.LOGS + self.file)
+            log_file = open(log_file, "r").read()
+            backup_file = open(self.backup_route + self.file,"w+")
             backup_file.write(str(log_file))
 
             # set up the SMTP server
-            s = smtplib.SMTP(host='smtp-mail.outlook.com', port=587)
+            s = smtplib.SMTP(host=cm.SMTP_HOST, port=cm.SMTP_PORT)
             s.starttls()
             MY_ADDRESS=os.getenv('OU_USER')
             PASSWORD=os.getenv('OU_PASS')
             s.login(MY_ADDRESS, PASSWORD)
+            print("SENDING MAIL")
 
             for name, email in zip(names, emails):
                 msg = MIMEMultipart()       
@@ -78,7 +94,7 @@ class Informer:
 
                 msg['From']=MY_ADDRESS
                 msg['To']=email
-                msg['Subject']=LOG_FILE
+                msg['Subject']=self.file
                 msg.attach(MIMEText(message, 'plain'))
                 
                 s.send_message(msg)
@@ -89,7 +105,7 @@ class Informer:
 
 if __name__ == '__main__':
     my_informer = Informer()
-    my_informer.main()
+    my_informer.main(True)
 
 
 """

@@ -39,6 +39,7 @@ class Producer:
     def opened_connection(self, connection):
         print("[!] Starting channel...")
         channel = connection.channel()
+        channel.queue_declare(queue=self.queue, durable=True)
         self.send_message(channel)
 
     
@@ -54,3 +55,4 @@ class Producer:
 if __name__ == '__main__':
     my_producer = Producer()
     my_producer.producer()
+    
