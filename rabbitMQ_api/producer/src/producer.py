@@ -55,4 +55,3 @@ class Producer:
 if __name__ == '__main__':
     my_producer = Producer()
     my_producer.producer()
-    
